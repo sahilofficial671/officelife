@@ -126,4 +126,19 @@ return [
 
     'complex_password' => env('COMPLEX_PASSWORD', true),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Login providers
+    |--------------------------------------------------------------------------
+    |
+    | List of available login providers, coma separated. This uses socialite
+    | packages.
+    |
+    | Supported: azure, github, google, linkedin, monica, saml2, slack, twitter.
+    |
+    */
+
+    'enable_external_login_providers' => env('ENABLE_EXTERNAL_LOGIN_PROVIDERS', false),
+    'login_providers' => explode(',', env('LOGIN_PROVIDERS')),
+
 ];

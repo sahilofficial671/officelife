@@ -25,11 +25,12 @@ class GroupMeetingsViewHelper
         $meetingsCollection = collect([]);
         foreach ($meetings as $meeting) {
             $members = $meeting->employees()
+                ->wherePivot('attended', true)
                 ->inRandomOrder()
                 ->take(3)
                 ->get();
 
-            $totalMembersCount = $meeting->employees()->count();
+            $totalMembersCount = $meeting->employees()->wherePivot('attended', true)->count();
             $totalMembersCount = $totalMembersCount - $members->count();
 
             $membersCollection = collect([]);
@@ -128,17 +129,16 @@ class GroupMeetingsViewHelper
      *
      * @param Meeting $meeting
      * @param Company $company
-     * @param string $criteria
+     * @param string|null $criteria
      * @return Collection
      */
-    public static function potentialGuests(Meeting $meeting, Company $company, string $criteria): Collection
+    public static function potentialGuests(Meeting $meeting, Company $company, ?string $criteria): Collection
     {
         $members = $meeting->employees()
-            ->select('id', 'first_name', 'last_name')
-            ->pluck('id')
-            ->toArray();
+            ->select('id')
+            ->pluck('id');
 
-        $potentialGuests = $company->employees()
+        return $company->employees()
             ->select('id', 'first_name', 'last_name')
             ->notLocked()
             ->whereNotIn('id', $members)
@@ -149,17 +149,13 @@ class GroupMeetingsViewHelper
             })
             ->orderBy('last_name', 'asc')
             ->take(10)
-            ->get();
-
-        $employeesCollection = collect([]);
-        foreach ($potentialGuests as $employee) {
-            $employeesCollection->push([
-                'id' => $employee->id,
-                'name' => $employee->name,
-            ]);
-        }
-
-        return $employeesCollection;
+            ->get()
+            ->map(function ($employee) {
+                return [
+                    'id' => $employee->id,
+                    'name' => $employee->name,
+                ];
+            });
     }
 
     /**

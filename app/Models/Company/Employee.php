@@ -62,6 +62,7 @@ class Employee extends Model
         'default_dashboard_view',
         'can_manage_expenses',
         'display_welcome_message',
+        'contract_renewed_at',
     ];
 
     /**
@@ -582,6 +583,56 @@ class Employee extends Model
     }
 
     /**
+     * Get the job openings associated with the employee as sponsor.
+     *
+     * @return BelongsToMany
+     */
+    public function jobOpeningsAsSponsor()
+    {
+        return $this->belongsToMany(JobOpening::class, 'job_opening_sponsor')->withTimestamps();
+    }
+
+    /**
+     * Get all of the comments written by the employee.
+     *
+     * @return hasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'author_id');
+    }
+
+    /**
+     * Get the issues the employee is the reporter of.
+     *
+     * @return HasMany
+     */
+    public function issues()
+    {
+        return $this->hasMany(ProjectIssue::class, 'reporter_id');
+    }
+
+    /**
+     * Get the project issues associated with the employee as assignee.
+     *
+     * @return BelongsToMany
+     */
+    public function issuesAsAssignee()
+    {
+        return $this->belongsToMany(ProjectIssue::class, 'project_issue_assignees');
+    }
+
+    /**
+     * Get all discipline cases about the employee.
+     *
+     * @return HasMany
+     */
+    public function disciplineCases()
+    {
+        return $this->hasMany(DisciplineCase::class);
+    }
+
+    /**
      * Scope a query to only include unlocked users.
      *
      * @param  Builder $query
@@ -619,7 +670,7 @@ class Employee extends Model
                 'year' => $this->birthdate->year,
                 'month' => $this->birthdate->month,
                 'day' => $this->birthdate->day,
-                'age' => BirthdayHelper::age($this->birthdate, $loggedEmployee ? $loggedEmployee->timezone : null),
+                'age' => BirthdayHelper::age($this->birthdate, $this->timezone),
             ],
             'raw_description' => $this->description,
             'parsed_description' => is_null($this->description) ? null : StringHelper::parse($this->description),
@@ -697,12 +748,9 @@ class Employee extends Model
      */
     public function getListOfManagers(): Collection
     {
-        $managersCollection = collect([]);
-        foreach ($this->managers()->orderBy('id')->get() as $directReport) {
-            $managersCollection->push($directReport->manager);
-        }
-
-        return $managersCollection;
+        return $this->managers()->orderBy('id')->get()->map(function ($directReport) {
+            return $directReport->manager;
+        });
     }
 
     /**
@@ -712,12 +760,9 @@ class Employee extends Model
      */
     public function getListOfDirectReports(): Collection
     {
-        $directReportCollection = collect([]);
-        foreach ($this->directReports()->get() as $directReport) {
-            $directReportCollection->push($directReport->directReport);
-        }
-
-        return $directReportCollection;
+        return $this->directReports()->get()->map(function ($directReport) {
+            return $directReport->directReport;
+        });
     }
 
     /**

@@ -36,19 +36,15 @@ class ProjectFilesController extends Controller
         $loggedCompany = InstanceHelper::getLoggedCompany();
         $loggedEmployee = InstanceHelper::getLoggedEmployee();
 
-        try {
-            $project = Project::where('company_id', $loggedCompany->id)
-                ->findOrFail($projectId);
-        } catch (ModelNotFoundException $e) {
-            return redirect('home');
-        }
+        // project comes from the CheckProject middleware
+        $project = $request->get('project');
 
         return Inertia::render('Company/Project/Files/Index', [
             'tab' => 'files',
             'project' => ProjectViewHelper::info($project),
             'files' => ProjectFilesViewHelper::index($project, $loggedEmployee),
             'uploadcarePublicKey' => config('officelife.uploadcare_public_key'),
-            'notifications' => NotificationHelper::getNotifications(InstanceHelper::getLoggedEmployee()),
+            'notifications' => NotificationHelper::getNotifications($loggedEmployee),
         ]);
     }
 

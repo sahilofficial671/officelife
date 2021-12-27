@@ -1,6 +1,6 @@
 <style lang="scss" scoped>
 .link-icon {
-  width: 20px;
+  width: 18px;
   top: 1px;
 }
 
@@ -18,13 +18,13 @@
       <li v-for="link in localLinks" :key="link.id" class="mb2 relative" :data-cy="'project-link-' + link.id">
         <div class="flex">
           <!-- icon types -->
-          <img v-if="link.type == 'slack'" loading="lazy" src="/img/slack.svg" class="relative link-icon" :data-cy="'project-link-logo-slack-' + link.id"
+          <img v-if="link.type == 'slack'" loading="lazy" src="/img/slack.svg" class="relative link-icon mr1" :data-cy="'project-link-logo-slack-' + link.id"
                alt="link to slack" :class="editMode ? 'dn' : ''"
           />
-          <img v-if="link.type == 'email'" loading="lazy" src="/img/mail.svg" class="relative link-icon" :data-cy="'project-link-logo-email-' + link.id"
+          <img v-if="link.type == 'email'" loading="lazy" src="/img/mail.svg" class="relative link-icon mr1" :data-cy="'project-link-logo-email-' + link.id"
                alt="link to email" :class="editMode ? 'dn' : ''"
           />
-          <img v-if="link.type == 'url'" loading="lazy" src="/img/url.svg" class="relative link-icon" :data-cy="'project-link-logo-url-' + link.id"
+          <img v-if="link.type == 'url'" loading="lazy" src="/img/url.svg" class="relative link-icon mr1" :data-cy="'project-link-logo-url-' + link.id"
                alt="link to url" :class="editMode ? 'dn' : ''"
           />
 
@@ -45,10 +45,10 @@
 
       <!-- add a new link / edit links -->
       <li v-if="permissions.can_manage_links && addMode == false" class="mt3">
-        <a v-if="!editMode" href="" class="bb b--dotted bt-0 bl-0 br-0 pointer f6" data-cy="add-new-link" @click.prevent="addMode = true"><span>+</span> {{ $t('team.useful_link_cta') }}</a>
-        <span v-if="!editMode && localLinks.length > 0" class="moon-gray">|</span>
-        <a v-if="!editMode && localLinks.length > 0" href="" class="bb b--dotted bt-0 bl-0 br-0 pointer f6" data-cy="edit-links" @click.prevent="editMode = true">{{ $t('team.useful_link_edit') }}</a>
-        <a v-if="editMode" href="" class="bb b--dotted bt-0 bl-0 br-0 pointer f6" data-cy="exit-edit-link" @click.prevent="editMode = false">{{ $t('team.useful_link_exit_edit_mode') }}</a>
+        <a v-if="!editMode" class="bb b--dotted bt-0 bl-0 br-0 pointer f6" data-cy="add-new-link" @click.prevent="addMode = true"><span>+</span> {{ $t('team.useful_link_cta') }}</a>
+        <span v-if="!editMode && localLinks.length > 0" class="mr1 ml1 moon-gray">|</span>
+        <a v-if="!editMode && localLinks.length > 0" class="bb b--dotted bt-0 bl-0 br-0 pointer f6" data-cy="edit-links" @click.prevent="editMode = true">{{ $t('team.useful_link_edit') }}</a>
+        <a v-if="editMode" class="bb b--dotted bt-0 bl-0 br-0 pointer f6" data-cy="exit-edit-link" @click.prevent="editMode = false">{{ $t('team.useful_link_exit_edit_mode') }}</a>
       </li>
     </ul>
 

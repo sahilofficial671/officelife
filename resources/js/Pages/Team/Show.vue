@@ -17,25 +17,29 @@
   }
 }
 
+.popupmenu {
+  &:after {
+    left: auto;
+    right: 10px;
+  }
+
+  &:before {
+    left: auto;
+    right: 9px;
+  }
+}
 </style>
 
 <template>
   <layout :notifications="notifications">
     <div class="ph2 ph5-ns">
-      <!-- BREADCRUMB -->
-      <div class="mt4-l mt1 mb3 mw7 br3 center breadcrumb relative z-0 f6 pb2">
-        <ul class="list ph0 tc-l tl">
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/company'">{{ $t('app.breadcrumb_company') }}</inertia-link>
-          </li>
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/teams'">{{ $t('app.breadcrumb_team_list') }}</inertia-link>
-          </li>
-          <li class="di">
-            {{ team.name }}
-          </li>
-        </ul>
-      </div>
+      <breadcrumb
+        :root-url="'/' + $page.props.auth.company.id + '/teams'"
+        :root="$t('app.breadcrumb_team_list')"
+        :has-more="false"
+      >
+        {{ team.name }}
+      </breadcrumb>
 
       <!-- BODY -->
       <div class="cf mw8 center">
@@ -106,7 +110,7 @@
                     {{ newsItem.title }}
                   </h3>
                   <div class="f6 relative news-information silver">
-                    <img loading="lazy" :src="newsItem.author.avatar" class="br-100 relative dib-ns dn" alt="avatar" />
+                    <avatar v-if="newsItem.author.avatar" :avatar="newsItem.author.avatar" :size="18" :class="'avatar br-100 relative'" />
                     {{ $t('team.team_news_written_by_at', { name: newsItem.author.name, created_at: newsItem.localized_created_at }) }}
                   </div>
                 </div>
@@ -140,7 +144,7 @@
 
 <script>
 import Layout from '@/Shared/Layout';
-import vClickOutside from 'v-click-outside';
+import Breadcrumb from '@/Shared/Layout/Breadcrumb';
 import Members from '@/Pages/Team/Partials/Members';
 import TeamDescription from '@/Pages/Team/Partials/TeamDescription';
 import NewHiresNextWeek from '@/Pages/Team/Partials/NewHiresNextWeek';
@@ -149,10 +153,13 @@ import TeamUsefulLink from '@/Pages/Team/Partials/TeamUsefulLink';
 import RecentShips from '@/Pages/Team/Partials/RecentShips';
 import Birthdays from '@/Pages/Team/Partials/Birthdays';
 import Morale from '@/Pages/Team/Partials/Morale';
+import Avatar from '@/Shared/Avatar';
 
 export default {
   components: {
     Layout,
+    Avatar,
+    Breadcrumb,
     Members,
     TeamDescription,
     NewHiresNextWeek,
@@ -161,10 +168,6 @@ export default {
     RecentShips,
     Birthdays,
     Morale,
-  },
-
-  directives: {
-    clickOutside: vClickOutside.directive
   },
 
   props: {

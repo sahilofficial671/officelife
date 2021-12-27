@@ -206,6 +206,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Mapping for default issue types
+    |--------------------------------------------------------------------------
+    |
+    | Issue types are used in the project management domain.
+    | Here we define the type of issue type, as well as the color of the icon.
+    | When adding a new issue type here, don't forget to add the translation key
+    | in the `en/account` lang file, so we know how to display the right information.
+    |
+    */
+    'issue_types' => [
+        'story' => '#2ca775',
+        'bug' => '#ff5136',
+        'epic' => '#5652b3',
+        'task' => '#0080f8',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Mapping of the Help sections
     |--------------------------------------------------------------------------
     |
@@ -242,6 +260,7 @@ return [
         'account_general_currency' => 'manage/company-management.html#currency',
         'account_general_logo' => 'manage/company-management.html#logo',
         'account_general_founded_date' => 'manage/company-management.html#defining-the-company-s-founded-date',
+        'account_general_location' => 'manage/company-management.html#defining-the-company-s-main-location',
         'account_cancellation' => 'manage/company-management.html#account-cancellation',
         'one_on_ones' => 'grow/one-on-ones.html#overview',
         'project' => 'operate/project-management.html#overview',
@@ -252,5 +271,10 @@ return [
         'ecoffee' => 'grow/e-coffee.html#overview',
         'questions' => 'communicate/get-to-know-your-colleagues.html',
         'time_tracking' => 'operate/time-tracking.html',
+        'billing' => 'manage/company-management.html#account-billing',
+        'wiki' => 'communicate/wiki.html',
+        'recruitment_template' => 'recruit/applicant-tracking-system.html#the-recruiting-stages-and-templates',
+        'ask_me_anything' => 'communicate/ask-me-anything.html',
+        'discipline' => 'grow/discipline.html',
     ],
 ];

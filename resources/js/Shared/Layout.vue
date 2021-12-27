@@ -78,16 +78,19 @@ nav {
 
           <!-- MENU -->
           <div v-if="!noMenu">
-            <inertia-link v-if="$page.props.auth.employee.display_welcome_message" :href="'/' + $page.props.auth.company.id + '/welcome'" data-cy="header-desktop-welcome-tab" class="mr1 no-underline pa2 bb-0 special">
+            <inertia-link v-if="$page.props.auth.employee.display_welcome_message" :href="'/' + $page.props.auth.company.id + '/welcome'" data-cy="header-desktop-welcome-tab" class="mr2 no-underline pa2 bb-0 special">
               <span class="mr1">👋</span> {{ $t('app.header_welcome') }}
             </inertia-link>
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/dashboard'" class="mr1 no-underline pa2 bb-0 special">
+            <inertia-link :href="'/' + $page.props.auth.company.id + '/dashboard'" class="mr2 no-underline pa2 bb-0 special">
               <span class="mr1">🏡</span> {{ $t('app.header_home') }}
             </inertia-link>
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/company'" class="mr1 no-underline pa2 bb-0 special" data-cy="header-teams-link">
+            <inertia-link :href="'/' + $page.props.auth.company.id + '/company'" class="mr2 no-underline pa2 bb-0 special" data-cy="header-teams-link">
               <span class="mr1">⛺️</span> {{ $t('app.header_company') }}
             </inertia-link>
-            <a data-cy="header-find-link" class="mr1 no-underline pa2 bb-0 special pointer" @click="showFindModal">
+            <inertia-link v-if="$page.props.auth.employee.permission_level < 300" :href="'/' + $page.props.auth.company.id + '/recruiting/job-openings'" class="mr2 no-underline pa2 bb-0 special">
+              <span class="mr1">🥇</span> {{ $t('app.header_recruiting') }}
+            </inertia-link>
+            <a data-cy="header-find-link" class="mr2 no-underline pa2 bb-0 special pointer" @click="showFindModal">
               <span class="mr1">🔍</span> {{ $t('app.header_find') }}
             </a>
             <inertia-link v-if="$page.props.auth.company && $page.props.auth.employee.permission_level <= 200" :href="'/' + $page.props.auth.company.id + '/account'" data-cy="header-adminland-link" class="no-underline pa2 bb-0 special">
@@ -95,7 +98,7 @@ nav {
             </inertia-link>
           </div>
         </div>
-        <div class="flex-grow pa2 flex items-center">
+        <div class="pa2 flex items-center">
           <notifications-component :notifications="notifications" />
 
           <user-menu :show-help-on-page="showHelpOnPage" />
@@ -220,15 +223,15 @@ nav {
     <div class="mt5 mb4 cf mw6 center tc f7">
       <span class="mr1">
         🎡
-      </span> Welcome to OfficeLife beta! <a href="https://github.com/officelifehq/officelife/discussions/944" class="mr2">Contact us to send feedback</a> <span class="mr1">
+      </span> Welcome to OfficeLife beta! <a href="https://github.com/officelifehq/officelife/discussions/944" class="mr2">Contact us to send feedback</a>
+      <span class="mr1">
         🎉
-      </span><a href="https://twitter.com/hashtag/officelifefeatures?f=live">What's new</a>
+      </span>Thanks for using our tool!
     </div>
   </div>
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside';
 import UserMenu from '@/Shared/UserMenu';
 import LoadingButton from '@/Shared/LoadingButton';
 import NotificationsComponent from '@/Shared/Notifications';
@@ -242,10 +245,6 @@ export default {
     NotificationsComponent,
     Toaster,
     'ball-pulse-loader': BallPulseLoader.component,
-  },
-
-  directives: {
-    clickOutside: vClickOutside.directive
   },
 
   props: {

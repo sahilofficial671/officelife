@@ -16,23 +16,14 @@ input[type=radio] {
 <template>
   <layout :notifications="notifications">
     <div class="ph2 ph0-ns">
-      <!-- BREADCRUMB -->
-      <div class="mt4-l mt1 mw6 br3 bg-white box center breadcrumb relative z-0 f6 pb2">
-        <ul class="list ph0 tc-l tl">
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/dashboard'">{{ $t('app.breadcrumb_dashboard') }}</inertia-link>
-          </li>
-          <li class="di">
-            ...
-          </li>
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/account/softwares'">{{ $t('app.breadcrumb_account_manage_softwares') }}</inertia-link>
-          </li>
-          <li class="di">
-            {{ $t('app.breadcrumb_account_edit_software') }}
-          </li>
-        </ul>
-      </div>
+      <breadcrumb :with-box="true"
+                  :root-url="'/' + $page.props.auth.company.id + '/dashboard'"
+                  :root="$t('app.breadcrumb_dashboard')"
+                  :previous-url="'/' + $page.props.auth.company.id + '/account/softwares'"
+                  :previous="$t('app.breadcrumb_account_manage_softwares')"
+      >
+        {{ $t('app.breadcrumb_account_edit_software') }}
+      </breadcrumb>
 
       <!-- BODY -->
       <div class="mw7 center br3 mb5 bg-white box restricted relative z-1">
@@ -148,19 +139,16 @@ input[type=radio] {
                   </div>
                   <div class="dtc-ns pr2-ns pb0-ns w-100">
                     <!-- currency -->
-                    <select-box
-                      :id="'currency'"
-                      v-model="form.currency"
-                      :options="currencies"
-                      :name="'currency'"
-                      :errors="$page.props.errors.currency"
-                      :label="$t('dashboard.expense_create_currency')"
-                      :custom-label-key="'code'"
-                      :custom-value-key="'id'"
+                    <label class="db mb-2">
+                      {{ $t('dashboard.expense_create_currency') }}
+                    </label>
+                    <a-select
+                      v-model:value="form.currency"
                       :placeholder="$t('dashboard.expense_create_currency')"
-                      :required="false"
-                      :value="form.currency"
-                      :datacy="'expense-currency'"
+                      style="width: 200px"
+                      :options="currencies"
+                      show-search
+                      option-filter-prop="label"
                     />
                   </div>
                 </div>
@@ -170,10 +158,7 @@ input[type=radio] {
             <!-- Purchase date -->
             <div class="cf pa3 bb bb-gray pb4">
               <div class="fl-ns w-third-ns w-100 mb3 mb0-ns">
-                <strong>{{ $t('account.software_new_purchased_date') }}</strong>
-                <p class="f7 silver lh-copy pr3-ns">
-                  {{ $t('employee.edit_information_timezone_help') }}
-                </p>
+                <strong>{{ $t('account.software_new_purchase_date') }}</strong>
               </div>
               <div class="fl-ns w-two-thirds-ns w-100">
                 <div class="dt-ns dt--fixed di">
@@ -243,16 +228,16 @@ import TextInput from '@/Shared/TextInput';
 import Errors from '@/Shared/Errors';
 import LoadingButton from '@/Shared/LoadingButton';
 import Layout from '@/Shared/Layout';
-import SelectBox from '@/Shared/Select';
+import Breadcrumb from '@/Shared/Layout/Breadcrumb';
 import TextArea from '@/Shared/TextArea';
 
 export default {
   components: {
     Layout,
+    Breadcrumb,
     TextInput,
     Errors,
     LoadingButton,
-    SelectBox,
     TextArea,
   },
 

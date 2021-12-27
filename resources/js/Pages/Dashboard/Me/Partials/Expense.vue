@@ -1,4 +1,4 @@
-<style lang="scss" scoped>
+k<style lang="scss" scoped>
 .expense-item:first-child {
   border-top-width: 1px;
   border-top-style: solid;
@@ -81,25 +81,22 @@
                               :type="'number'"
                               :step="'0.01'"
                               :min="0"
-                              :max="1000000"
+                              :max="10000000000"
                               @esc-key-pressed="hideAddMode()"
                   />
                 </div>
                 <div class="dtc-ns pr2-ns pb0-ns w-100">
                   <!-- currency -->
-                  <select-box
-                    :id="'currency'"
-                    v-model="form.currency"
-                    :options="currencies"
-                    :name="'currency'"
-                    :errors="$page.props.errors.currency"
-                    :label="$t('dashboard.expense_create_currency')"
-                    :custom-label-key="'code'"
-                    :custom-value-key="'id'"
+                  <label class="db mb-2">
+                    {{ $t('dashboard.expense_create_currency') }}
+                  </label>
+                  <a-select
+                    v-model:value="form.currency"
                     :placeholder="$t('dashboard.expense_create_currency')"
-                    :required="true"
-                    :value="form.currency"
-                    :datacy="'expense-currency'"
+                    style="width: 200px; margin-bottom: 10px;"
+                    :options="currencies"
+                    show-search
+                    option-filter-prop="label"
                   />
                 </div>
               </div>
@@ -140,7 +137,7 @@
 
           <!-- Actions -->
           <p class="db lh-copy f6">
-            👋 {{ $t('dashboard.expense_create_help') }}
+            <span class="mr1">👋</span> {{ $t('dashboard.expense_create_help') }}
           </p>
           <p class="ma0">
             <loading-button :class="'btn add w-auto-ns w-100 pv2 ph3 mr2 mb0-ns mb2-ns'" :state="loadingState" :text="$t('app.save')" :cypress-selector="'submit-expense'" />
@@ -184,7 +181,6 @@
 import Errors from '@/Shared/Errors';
 import LoadingButton from '@/Shared/LoadingButton';
 import TextInput from '@/Shared/TextInput';
-import SelectBox from '@/Shared/Select';
 import Help from '@/Shared/Help';
 
 export default {
@@ -192,7 +188,6 @@ export default {
     Errors,
     LoadingButton,
     TextInput,
-    SelectBox,
     Help,
   },
 

@@ -5,28 +5,21 @@
     border-width: 2px;
   }
 }
+
+@import 'ant-design-vue/lib/date-picker/style/index.css';
 </style>
 
 <template>
   <layout :notifications="notifications">
     <div class="ph2 ph0-ns">
-      <!-- BREADCRUMB -->
-      <div class="mt4-l mt1 mw6 br3 bg-white box center breadcrumb relative z-0 f6 pb2">
-        <ul class="list ph0 tc-l tl">
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/dashboard'">{{ $t('app.breadcrumb_dashboard') }}</inertia-link>
-          </li>
-          <li class="di">
-            ...
-          </li>
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/employees/' + employee.id" data-cy="breadcrumb-employee">{{ employee.name }}</inertia-link>
-          </li>
-          <li class="di">
-            {{ $t('app.breadcrumb_employee_edit') }}
-          </li>
-        </ul>
-      </div>
+      <breadcrumb :with-box="true"
+                  :root-url="'/' + $page.props.auth.company.id + '/dashboard'"
+                  :root="$t('app.breadcrumb_dashboard')"
+                  :previous-url="'/' + $page.props.auth.company.id + '/employees/' + employee.id"
+                  :previous="employee.name"
+      >
+        {{ $t('app.breadcrumb_employee_edit') }}
+      </breadcrumb>
 
       <!-- BODY -->
       <div class="mw7 center br3 mb5 bg-white box relative z-1">
@@ -132,50 +125,7 @@
 
               <div class="fl-ns w-two-thirds-ns w-100">
                 <!-- birthdate -->
-                <div class="dt-ns dt--fixed di">
-                  <div class="dtc-ns pr2-ns pb0-ns w-100">
-                    <!-- year -->
-                    <text-input :id="'year'"
-                                v-model="form.year"
-                                :name="'year'"
-                                :errors="$page.props.errors.year"
-                                :label="$t('employee.edit_information_year')"
-                                :required="false"
-                                :type="'number'"
-                                :min="1900"
-                                :max="employee.max_year"
-                                :help="$t('employee.edit_information_year_help')"
-                    />
-                  </div>
-                  <div class="dtc-ns pr2-ns pb0-ns w-100">
-                    <!-- month -->
-                    <text-input :id="'month'"
-                                v-model="form.month"
-                                :name="'month'"
-                                :errors="$page.props.errors.month"
-                                :label="$t('employee.edit_information_month')"
-                                :required="false"
-                                :type="'number'"
-                                :min="1"
-                                :max="12"
-                                :help="$t('employee.edit_information_month_help')"
-                    />
-                  </div>
-                  <div class="dtc-ns pr2-ns pb0-ns w-100">
-                    <!-- day -->
-                    <text-input :id="'day'"
-                                v-model="form.day"
-                                :name="'day'"
-                                :errors="$page.props.errors.day"
-                                :label="$t('employee.edit_information_day')"
-                                :required="false"
-                                :type="'number'"
-                                :min="1"
-                                :max="31"
-                                :help="$t('employee.edit_information_day_help')"
-                    />
-                  </div>
-                </div>
+                <a-date-picker v-model:value="form.birthdate" />
               </div>
             </div>
 
@@ -189,14 +139,13 @@
               </div>
 
               <div class="fl-ns w-two-thirds-ns w-100">
-                <select-box :id="'timezone'"
-                            v-model="form.timezone"
-                            :options="timezones"
-                            :name="'timezone'"
-                            :errors="$page.props.errors.timezone"
-                            :label="$t('employee.edit_information_timezone_label')"
-                            :placeholder="$t('app.choose_value')"
-                            :required="true"
+                <a-select
+                  v-model:value="form.timezone"
+                  show-search
+                  placeholder="$t('app.choose')"
+                  style="width: 100%;"
+                  :options="timezones"
+                  option-filter-prop="label"
                 />
               </div>
             </div>
@@ -212,50 +161,7 @@
 
               <div class="fl-ns w-two-thirds-ns w-100">
                 <!-- hired_at -->
-                <div class="dt-ns dt--fixed di">
-                  <div class="dtc-ns pr2-ns pb0-ns w-100">
-                    <!-- year -->
-                    <text-input :id="'hired_at_year'"
-                                v-model="form.hired_year"
-                                :name="'hired_at_year'"
-                                :errors="$page.props.errors.hired_year"
-                                :label="$t('employee.edit_information_year')"
-                                :required="false"
-                                :type="'number'"
-                                :min="1900"
-                                :max="2050"
-                                :help="$t('employee.edit_information_year_help')"
-                    />
-                  </div>
-                  <div class="dtc-ns pr2-ns pb0-ns w-100">
-                    <!-- month -->
-                    <text-input :id="'hired_at_month'"
-                                v-model="form.hired_month"
-                                :name="'hired_at_month'"
-                                :errors="$page.props.errors.hired_month"
-                                :label="$t('employee.edit_information_month')"
-                                :required="false"
-                                :type="'number'"
-                                :min="1"
-                                :max="12"
-                                :help="$t('employee.edit_information_month_help')"
-                    />
-                  </div>
-                  <div class="dtc-ns pr2-ns pb0-ns w-100">
-                    <!-- day -->
-                    <text-input :id="'hired_at_day'"
-                                v-model="form.hired_day"
-                                :name="'hired_at_day'"
-                                :errors="$page.props.errors.hired_day"
-                                :label="$t('employee.edit_information_day')"
-                                :required="false"
-                                :type="'number'"
-                                :min="1"
-                                :max="31"
-                                :help="$t('employee.edit_information_day_help')"
-                    />
-                  </div>
-                </div>
+                <a-date-picker v-model:value="form.hired_at" />
               </div>
             </div>
 
@@ -319,12 +225,12 @@ import TextInput from '@/Shared/TextInput';
 import Errors from '@/Shared/Errors';
 import LoadingButton from '@/Shared/LoadingButton';
 import Layout from '@/Shared/Layout';
-import SelectBox from '@/Shared/Select';
+import Breadcrumb from '@/Shared/Layout/Breadcrumb';
 
 export default {
   components: {
     Layout,
-    SelectBox,
+    Breadcrumb,
     TextInput,
     Errors,
     LoadingButton,
@@ -357,12 +263,8 @@ export default {
         email: null,
         phone: null,
         timezone: null,
-        year: null,
-        month: null,
-        day: null,
-        hired_year: null,
-        hired_month: null,
-        hired_day: null,
+        birthdate: null,
+        hired_at: null,
         twitter: null,
         slack: null,
         errors: [],
@@ -382,15 +284,11 @@ export default {
     this.form.timezone = this.employee.timezone;
 
     if (this.employee.birthdate != null) {
-      this.form.year = this.employee.birthdate.year;
-      this.form.month = this.employee.birthdate.month;
-      this.form.day = this.employee.birthdate.day;
+      this.form.birthdate = this.employee.birthdate;
     }
 
     if (this.employee.hired_at != null) {
-      this.form.hired_year = this.employee.hired_at.year;
-      this.form.hired_month = this.employee.hired_at.month;
-      this.form.hired_day = this.employee.hired_at.day;
+      this.form.hired_at = this.employee.hired_at;
     }
   },
 

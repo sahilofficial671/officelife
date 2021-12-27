@@ -25,6 +25,8 @@ class Company extends Model
     protected $fillable = [
         'name',
         'currency',
+        'slug',
+        'location',
         'has_dummy_data',
         'logo_file_id',
         'e_coffee_enabled',
@@ -294,6 +296,26 @@ class Company extends Model
     }
 
     /**
+     * Get all wikis written in the company.
+     *
+     * @return HasMany
+     */
+    public function wikis()
+    {
+        return $this->hasMany(Wiki::class);
+    }
+
+    /**
+     * Get all recruiting stage templates in the company.
+     *
+     * @return HasMany
+     */
+    public function recruitingStageTemplates()
+    {
+        return $this->hasMany(RecruitingStageTemplate::class);
+    }
+
+    /**
      * Get the logo associated with the company.
      *
      * @return HasOne
@@ -301,6 +323,66 @@ class Company extends Model
     public function logo()
     {
         return $this->hasOne(File::class, 'id', 'logo_file_id');
+    }
+
+    /**
+     * Get all job openings written in the company.
+     *
+     * @return HasMany
+     */
+    public function jobOpenings()
+    {
+        return $this->hasMany(JobOpening::class);
+    }
+
+    /**
+     * Get all candidates in the company.
+     *
+     * @return HasMany
+     */
+    public function candidates()
+    {
+        return $this->hasMany(Candidate::class);
+    }
+
+    /**
+     * Get all sessions in the company.
+     *
+     * @return HasMany
+     */
+    public function askMeAnythingSessions()
+    {
+        return $this->hasMany(AskMeAnythingSession::class);
+    }
+
+    /**
+     * Get all of the comments made in the company.
+     *
+     * @return HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Get all issue types in the company.
+     *
+     * @return HasMany
+     */
+    public function issueTypes()
+    {
+        return $this->hasMany(IssueType::class);
+    }
+
+    /**
+     * Get all discipline cases in the company.
+     *
+     * @return HasMany
+     */
+    public function disciplineCases()
+    {
+        return $this->hasMany(DisciplineCase::class);
     }
 
     /**

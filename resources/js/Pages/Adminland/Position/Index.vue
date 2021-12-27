@@ -7,20 +7,15 @@
 <template>
   <layout :notifications="notifications">
     <div class="ph2 ph0-ns">
-      <!-- BREADCRUMB -->
-      <div class="mt4-l mt1 mw6 br3 bg-white box center breadcrumb relative z-0 f6 pb2">
-        <ul class="list ph0 tc-l tl">
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/dashboard'">{{ $t('app.breadcrumb_dashboard') }}</inertia-link>
-          </li>
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/account'">{{ $t('app.breadcrumb_account_home') }}</inertia-link>
-          </li>
-          <li class="di">
-            {{ $t('app.breadcrumb_account_manage_positions') }}
-          </li>
-        </ul>
-      </div>
+      <breadcrumb :with-box="true"
+                  :root-url="'/' + $page.props.auth.company.id + '/dashboard'"
+                  :root="$t('app.breadcrumb_dashboard')"
+                  :previous-url="'/' + $page.props.auth.company.id + '/account'"
+                  :previous="$t('app.breadcrumb_account_home')"
+                  :has-more="false"
+      >
+        {{ $t('app.breadcrumb_account_manage_positions') }}
+      </breadcrumb>
 
       <!-- BODY -->
       <div class="mw7 center br3 mb5 bg-white box restricted relative z-1">
@@ -54,7 +49,7 @@
                 />
               </div>
               <div class="fl w-30-ns w-100 tr">
-                <a class="btn dib-l db mb2 mb0-ns" @click.prevent="modal = false">
+                <a class="btn dib-l db mb2 mb0-ns mr2-ns" @click.prevent="modal = false">
                   {{ $t('app.cancel') }}
                 </a>
                 <loading-button :class="'btn add w-auto-ns w-100 pv2 ph3'" data-cy="modal-add-cta" :state="loadingState" :text="$t('app.add')" />
@@ -84,7 +79,7 @@
                     />
                   </div>
                   <div class="fl w-30-ns w-100 tr">
-                    <a class="btn dib-l db mb2 mb0-ns" :data-cy="'list-rename-cancel-button-' + position.id" @click.prevent="idToUpdate = 0">
+                    <a class="btn dib-l db mb2 mb0-ns mr2-ns" :data-cy="'list-rename-cancel-button-' + position.id" @click.prevent="idToUpdate = 0">
                       {{ $t('app.cancel') }}
                     </a>
                     <loading-button :class="'btn add w-auto-ns w-100 mb2 pv2 ph3'" :data-cy="'list-rename-cta-button-' + position.id" :state="loadingState" :text="$t('app.update')" />
@@ -138,10 +133,12 @@ import TextInput from '@/Shared/TextInput';
 import Errors from '@/Shared/Errors';
 import LoadingButton from '@/Shared/LoadingButton';
 import Layout from '@/Shared/Layout';
+import Breadcrumb from '@/Shared/Layout/Breadcrumb';
 
 export default {
   components: {
     Layout,
+    Breadcrumb,
     TextInput,
     Errors,
     LoadingButton,

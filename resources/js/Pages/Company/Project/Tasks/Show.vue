@@ -60,20 +60,12 @@ input[type=checkbox] {
 <template>
   <layout :notifications="notifications">
     <div class="ph2 ph5-ns">
-      <!-- BREADCRUMB -->
-      <div class="mt4-l mt1 mb4 mw6 br3 center breadcrumb relative z-0 f6 pb2">
-        <ul class="list ph0 tc-l tl">
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/company'">{{ $t('app.breadcrumb_company') }}</inertia-link>
-          </li>
-          <li class="di">
-            <inertia-link :href="'/' + $page.props.auth.company.id + '/company/projects'">{{ $t('app.breadcrumb_project_list') }}</inertia-link>
-          </li>
-          <li class="di">
-            {{ $t('app.breadcrumb_project_detail') }}
-          </li>
-        </ul>
-      </div>
+      <breadcrumb :has-more="false"
+                  :previous-url="route('projects.index', { company: $page.props.auth.company.id})"
+                  :previous="$t('app.breadcrumb_project_list')"
+      >
+        {{ $t('app.breadcrumb_project_detail') }}
+      </breadcrumb>
 
       <!-- BODY -->
       <div class="mw8 center br3 mb5 relative cf">
@@ -162,13 +154,16 @@ input[type=checkbox] {
               <div class="cf bb bb-gray">
                 <!-- assigned to -->
                 <div class="fl w-50 br bb-gray pa3 bg-gray stat-left-corner">
-                  <select-box :ref="'assignee'"
-                              v-model="form.assignee_id"
-                              :options="members"
-                              :errors="$page.props.errors.assignee_id"
-                              :label="$t('project.task_edit_assignee')"
-                              :placeholder="$t('app.choose_value')"
-                              :required="false"
+                  <label class="db mb-2">
+                    {{ $t('project.task_edit_assignee') }}
+                  </label>
+                  <a-select
+                    v-model:value="form.assignee_id"
+                    :placeholder="$t('app.choose')"
+                    style="width: 200px"
+                    :options="members"
+                    show-search
+                    option-filter-prop="label"
                   />
                 </div>
 
@@ -176,13 +171,16 @@ input[type=checkbox] {
                 <div class="fl w-50 pa3 bg-gray stat-right-corner">
                   <p v-if="lists.length == 0" class="ma0">{{ $t('project.task_show_no_list') }}</p>
                   <div v-else>
-                    <select-box :ref="'list'"
-                                v-model="form.task_list_id"
-                                :options="lists"
-                                :errors="$page.props.errors.task_list_id"
-                                :label="$t('project.task_show_part_of_list')"
-                                :placeholder="$t('app.choose_value')"
-                                :required="false"
+                    <label class="db mb-2">
+                      {{ $t('project.task_show_part_of_list') }}
+                    </label>
+                    <a-select
+                      v-model:value="form.task_list_id"
+                      :placeholder="$t('app.choose_value')"
+                      style="width: 200px"
+                      :options="lists"
+                      show-search
+                      option-filter-prop="label"
                     />
                   </div>
                 </div>
@@ -211,7 +209,7 @@ input[type=checkbox] {
           </div>
 
           <!-- time tracking entries -->
-          <div v-if="displayTimeTrackingEntriesMode && timeTrackingEntries.length != 0" class="ba br3 bb-gray bg-white">
+          <div v-if="displayTimeTrackingEntriesMode && timeTrackingEntries.length != 0" class="ba br3 bb-gray bg-white mb3">
             <!-- list of existing entries -->
             <div v-for="entry in timeTrackingEntries" :key="entry.id" class="pa3 bb bb-gray bb-gray-hover relative time-tracking-item">
               <span class="f7 mr2">
@@ -225,9 +223,15 @@ input[type=checkbox] {
           </div>
 
           <!-- no time tracking entries - blank state -->
-          <div v-if="displayTimeTrackingEntriesMode && timeTrackingEntries.length == 0" class="ba br3 bb-gray bg-white pa3">
+          <div v-if="displayTimeTrackingEntriesMode && timeTrackingEntries.length == 0" class="ba br3 bb-gray bg-white pa3 mb3">
             {{ $t('project.task_show_no_time_tracking') }}
           </div>
+
+          <!-- comments -->
+          <comments
+            :comments="localTask.comments"
+            :post-url="`/${$page.props.auth.company.id}/company/projects/${project.id}/tasks/${localTask.id}/comments/`"
+          />
         </div>
 
         <!-- RIGHT COLUMN -->
@@ -327,26 +331,28 @@ input[type=checkbox] {
 
 <script>
 import Layout from '@/Shared/Layout';
+import Breadcrumb from '@/Shared/Layout/Breadcrumb';
 import ProjectMenu from '@/Pages/Company/Project/Partials/ProjectMenu';
 import BallClipRotate from 'vue-loaders/dist/loaders/ball-clip-rotate';
 import TextInput from '@/Shared/TextInput';
 import TextArea from '@/Shared/TextArea';
-import SelectBox from '@/Shared/Select';
 import LoadingButton from '@/Shared/LoadingButton';
 import TextDuration from '@/Shared/TextDuration';
 import Avatar from '@/Shared/Avatar';
+import Comments from '@/Shared/Comments';
 
 export default {
   components: {
     Layout,
+    Breadcrumb,
     Avatar,
     ProjectMenu,
     'ball-clip-rotate': BallClipRotate.component,
     TextInput,
     TextArea,
-    SelectBox,
     LoadingButton,
     TextDuration,
+    Comments,
   },
 
   props: {
@@ -381,7 +387,7 @@ export default {
       localTask: null,
       displayTimeTrackingEntriesMode: false,
       loadingTimeTrackingEntries: false,
-      timeTrackingEntries: null,
+      timeTrackingEntries: [],
       editMode: false,
       deleteMode: false,
       logTimeMode: false,
@@ -433,7 +439,7 @@ export default {
     },
 
     toggle() {
-      axios.put(`/${this.$page.props.auth.company.id}/company/projects/${this.project.id}/tasks/${this.localTask.id}/toggle`)
+      axios.put(this.localTask.url.toggle)
         .then(response => {
           this.flash(this.$t('project.task_show_status'), 'success');
           this.localTask.completed = !this.localTask.completed;
@@ -446,7 +452,7 @@ export default {
     showTimeTrackingEntries() {
       this.loadingTimeTrackingEntries = true;
 
-      axios.get(`/${this.$page.props.auth.company.id}/company/projects/${this.project.id}/tasks/${this.localTask.id}/timeTrackingEntries`)
+      axios.get(this.localTask.url.entries)
         .then(response => {
           this.timeTrackingEntries = response.data.data;
           this.displayTimeTrackingEntriesMode = true;
@@ -454,6 +460,7 @@ export default {
         })
         .catch(error => {
           this.form.errors = error.response.data;
+          this.loadingTimeTrackingEntries = false;
         });
       this.displayTimeTrackingEntriesMode = true;
     },

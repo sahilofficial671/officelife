@@ -11,7 +11,6 @@ use App\Models\Company\ProjectMessage;
 use Illuminate\Validation\ValidationException;
 use App\Services\Company\Project\DestroyProjectMessage;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Services\Company\Project\DestroyProjectDecision;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DestroyProjectMessageTest extends TestCase
@@ -65,7 +64,7 @@ class DestroyProjectMessageTest extends TestCase
         ];
 
         $this->expectException(ValidationException::class);
-        (new DestroyProjectDecision)->execute($request);
+        (new DestroyProjectMessage)->execute($request);
     }
 
     /** @test */

@@ -12,11 +12,8 @@ use App\Models\Company\ProjectTaskList;
 class AssignProjectTaskToTaskList extends BaseService
 {
     protected array $data;
-
     protected ProjectTask $projectTask;
-
     protected ProjectTaskList $projectTaskList;
-
     protected Project $project;
 
     /**
